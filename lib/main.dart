@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'screens/welcome_page/welcome_page.dart'; // Certifique-se de que este caminho está correto
 
-void main() => runApp(FooPayApp());
+void main() => runApp(const FooPayApp());
 
 class FooPayApp extends StatelessWidget {
+  const FooPayApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,6 +14,7 @@ class FooPayApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: WelcomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
