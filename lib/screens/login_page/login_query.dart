@@ -17,7 +17,6 @@ Future<http.Response> loginUserEmail(String email, String senha) async {
     final json = jsonDecode(response.body);
     token = json['token'];
   }
-  print(response.statusCode);
   return response;
 }
 
@@ -36,6 +35,5 @@ Future<http.Response> loginUserCpf(String cpf, String senha) async {
     final json = jsonDecode(response.body);
     token = json['token'];
   }
-
   return response;
 }
