@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fp_app/components/PopupError.dart';
+import 'package:fp_app/components/PopupProgress.dart';
+import 'package:fp_app/querys/login_query.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,8 +14,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  String email = "";
+  String senha = "";
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +40,6 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    controller: _emailController,
                     decoration: const InputDecoration(labelText: 'Email'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -43,9 +47,11 @@ class _LoginPageState extends State<LoginPage> {
                       }
                       return null;
                     },
+                    onSaved: (texto){
+                      email = texto!;
+                    },
                   ),
                   TextFormField(
-                    controller: _passwordController,
                     decoration: const InputDecoration(labelText: 'Senha'),
                     obscureText: true,
                     validator: (value) {
@@ -53,6 +59,9 @@ class _LoginPageState extends State<LoginPage> {
                         return 'Insira sua senha';
                       }
                       return null;
+                    },  
+                    onSaved: (texto){
+                      senha = texto!;
                     },
                   ),
                   const SizedBox(height: 20),
@@ -64,12 +73,43 @@ class _LoginPageState extends State<LoginPage> {
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // Process login
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Logging in...')),
+                      _formKey.currentState!.save();
+
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return const PopupProgress();
+                        },
                       );
+
+                      var response = await loginUserEmail(email, senha);
+
+                      Navigator.of(context).pop();
+
+                      if(response.statusCode == 200){
+                        String tipo = jsonDecode(response.body)["tipo"];
+                        switch (tipo) {
+                          case 'admin':
+                            print('admin');
+                            break;
+                          case 'clt':
+                            print('clt');
+                            break;
+                          case 'pj':
+                            print('pj');
+                        }
+                      }else{
+                        showDialog(
+                          // ignore: use_build_context_synchronously
+                          context: context,
+                          builder: (BuildContext context) {
+                            return PopupError(error: jsonDecode(response.body)["message"]);
+                          },
+                        );
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
