@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-late String token;
+import '../jwt_token.dart';
 
 Future<http.Response> loginUserEmail(String email, String senha) async {
   final response = await http.post(
@@ -16,10 +16,9 @@ Future<http.Response> loginUserEmail(String email, String senha) async {
   if (response.statusCode == 200) {
     final json = jsonDecode(response.body);
     token = json['token'];
-    return response;
-  } else {
-    return response;
   }
+  print(response.statusCode);
+  return response;
 }
 
 Future<http.Response> loginUserCpf(String cpf, String senha) async {
@@ -36,8 +35,7 @@ Future<http.Response> loginUserCpf(String cpf, String senha) async {
   if (response.statusCode == 200) {
     final json = jsonDecode(response.body);
     token = json['token'];
-    return response;
-  } else {
-    return response;
   }
+
+  return response;
 }
