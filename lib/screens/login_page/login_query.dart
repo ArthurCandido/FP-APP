@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-late String token;
+import '../jwt_token.dart';
 
 Future<http.Response> loginUserEmail(String email, String senha) async {
   final response = await http.post(
