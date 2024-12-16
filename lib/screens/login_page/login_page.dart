@@ -99,11 +99,11 @@ class _LoginPageState extends State<LoginPage> {
                                   builder: (context) => HomePageAdmin()),
                             );
                             break;
-                          case 'clt':
-                            print('clt');
+                          case 'CLT':
+                            Navigator.of(context).pop();
                             break;
-                          case 'pj':
-                            print('pj');
+                          case 'PJ':
+                            Navigator.of(context).pop();
                             break;
                         }
                       } else {
