@@ -42,7 +42,6 @@ Future<http.Response> getUser(String cpf, String email, String tipo) async {
     },
   );
 }
-
 Future<http.Response> updateUser(String cpf, String email, String senha, String tipo){
     return http.put(
     Uri.parse('http://localhost:3000/api/admin/user/$cpf'),
