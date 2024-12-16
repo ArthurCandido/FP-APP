@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fp_app/components/PopupError.dart';
 import 'package:fp_app/components/PopupProgress.dart';
 import 'package:fp_app/querys/login_query.dart';
+import 'package:fp_app/screens/admin_page/home_page_admin.dart'; // Certifique-se de que este caminho está correto
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                       return null;
                     },
-                    onSaved: (texto){
+                    onSaved: (texto) {
                       email = texto!;
                     },
                   ),
@@ -59,8 +59,8 @@ class _LoginPageState extends State<LoginPage> {
                         return 'Insira sua senha';
                       }
                       return null;
-                    },  
-                    onSaved: (texto){
+                    },
+                    onSaved: (texto) {
                       senha = texto!;
                     },
                   ),
@@ -89,24 +89,29 @@ class _LoginPageState extends State<LoginPage> {
 
                       Navigator.of(context).pop();
 
-                      if(response.statusCode == 200){
+                      if (response.statusCode == 200) {
                         String tipo = jsonDecode(response.body)["tipo"];
                         switch (tipo) {
                           case 'admin':
-                            print('admin');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePageAdmin()),
+                            );
                             break;
                           case 'clt':
                             print('clt');
                             break;
                           case 'pj':
                             print('pj');
+                            break;
                         }
-                      }else{
+                      } else {
                         showDialog(
-                          // ignore: use_build_context_synchronously
                           context: context,
                           builder: (BuildContext context) {
-                            return PopupError(error: jsonDecode(response.body)["message"]);
+                            return PopupError(
+                                error: jsonDecode(response.body)["message"]);
                           },
                         );
                       }
