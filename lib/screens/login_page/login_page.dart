@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fp_app/components/PopupError.dart';
 import 'package:fp_app/components/PopupProgress.dart';
 import 'package:fp_app/querys/login_query.dart';
-import 'package:fp_app/screens/admin_page/home_page_admin.dart'; // Certifique-se de que este caminho está correto
+import 'package:fp_app/screens/admin_page/home_page_admin.dart';
+import 'package:fp_app/screens/home_page_clt/home_page_clt.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -71,63 +72,72 @@ class _LoginPageState extends State<LoginPage> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
 
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return const PopupProgress();
-                        },
-                      );
-
-                      var response = await loginUserEmail(email, senha);
-
-                      Navigator.of(context).pop();
-
-                      if (response.statusCode == 200) {
-                        String tipo = jsonDecode(response.body)["tipo"];
-                        switch (tipo) {
-                          case 'admin':
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePageAdmin()),
-                            );
-                            break;
-                          case 'CLT':
-                            Navigator.of(context).pop();
-                            break;
-                          case 'PJ':
-                            Navigator.of(context).pop();
-                            break;
-                        }
-                      } else {
                         showDialog(
                           context: context,
+                          barrierDismissible: false,
                           builder: (BuildContext context) {
-                            return PopupError(
-                                error: jsonDecode(response.body)["message"]);
+                            return const PopupProgress();
                           },
                         );
+
+                        var response = await loginUserEmail(email, senha);
+
+                        Navigator.of(context).pop();
+
+                        if (response.statusCode == 200) {
+                          String tipo = jsonDecode(response.body)["tipo"];
+                          Map<String, dynamic> user = jsonDecode(response.body);
+                          switch (tipo) {
+                            case 'admin':
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePageAdmin()),
+                              );
+                              break;
+                            case 'CLT':
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomePageCLT(user: user)),
+                              );
+                              break;
+                            case 'PJ':
+                              Navigator.of(context).pop();
+                              break;
+                          }
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return PopupError(
+                                  error: jsonDecode(response.body)["message"]);
+                            },
+                          );
+                        }
                       }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF832f30),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF832f30),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
