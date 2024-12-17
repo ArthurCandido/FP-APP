@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fp_app/screens/funcionario_page/funcionario_page.dart';
-import 'package:fp_app/screens/funcionario_page/funcionario_editing_page.dart'; // Import the editing page
+import 'package:fp_app/screens/funcionario_page/funcionario_editing_page.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
-import 'dart:convert'; // For JSON decoding
-import 'package:http/http.dart' as http;
-import '../crud_funcionario/user_queries.dart'; // Replace with the actual file path for getUser
+import 'package:fp_app/screens/holerite_page/add_holerite_page.dart';
+import 'dart:convert';
+import '../crud_funcionario/user_queries.dart';
 
 class HomePageAdmin extends StatefulWidget {
   const HomePageAdmin({super.key});
@@ -28,11 +28,10 @@ class _HomePageAdminState extends State<HomePageAdmin> {
       isLoading = true;
     });
     try {
-      final response = await getUser(
-          "", "", "", ""); // Fetch all users with empty query params
+      final response = await getUser("", "", "", "");
       if (response.statusCode == 200) {
         setState(() {
-          users = jsonDecode(response.body); // Decode the JSON response
+          users = jsonDecode(response.body);
           isLoading = false;
         });
       } else {
@@ -50,12 +49,12 @@ class _HomePageAdminState extends State<HomePageAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Admin'),
+        title: const Text('Home Admin', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF832f30),
         automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
@@ -64,10 +63,12 @@ class _HomePageAdminState extends State<HomePageAdmin> {
               );
             },
           ),
-          // Reload button in the app bar
           IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: fetchUsers, // Refresh users when pressed
+            icon: const Icon(
+              Icons.refresh,
+              color: Colors.white,
+            ),
+            onPressed: fetchUsers,
           ),
         ],
       ),
@@ -83,11 +84,11 @@ class _HomePageAdminState extends State<HomePageAdmin> {
                       final user = users[index];
                       return GestureDetector(
                         onTap: () {
-                          // Navigate to FuncionarioEditingPage instead of FuncionarioPage
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => FuncionarioEditingPage(user: user),
+                              builder: (context) =>
+                                  FuncionarioEditingPage(user: user),
                             ),
                           );
                         },
@@ -124,19 +125,42 @@ class _HomePageAdminState extends State<HomePageAdmin> {
                     },
                   ),
                 ),
-      // Add User Button
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to FuncionarioPage when the "Add User" button is pressed
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const FuncionarioPage(), // Navigate to the page for adding a new user
+      floatingActionButton: Stack(
+        children: [
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FuncionarioPage(),
+                  ),
+                );
+              },
+              backgroundColor: const Color(0xFF832f30),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
-          );
-        },
-        backgroundColor: const Color(0xFF832f30),
-        child: const Icon(Icons.add),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 70),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddHoleritePage(),
+                    ),
+                  );
+                },
+                backgroundColor: const Color(0xFF832f30),
+                child: const Icon(Icons.receipt, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

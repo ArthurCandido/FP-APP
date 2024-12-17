@@ -1,8 +1,10 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:fp_app/screens/crud_funcionario/user_queries.dart';
 
 class FuncionarioEditingPage extends StatefulWidget {
-  final Map<String, dynamic> user; // Accept a user object to populate the form
+  final Map<String, dynamic> user;
 
   const FuncionarioEditingPage({super.key, required this.user});
 
@@ -16,24 +18,19 @@ class _FuncionarioEditingPageState extends State<FuncionarioEditingPage> {
   late TextEditingController _emailController;
   late TextEditingController _cpfController;
   late TextEditingController _passwordController;
-  late TextEditingController _passwordOldController;
-  // Define the list of contract types
-  List<String> _contractTypes = ['CLT', 'PJ', 'admin'];
+  final List<String> _contractTypes = ['CLT', 'PJ', 'admin'];
   late String _contractType;
 
   @override
   void initState() {
     super.initState();
 
-    // Initialize controllers with the current user data
     _nameController = TextEditingController(text: widget.user['nome']);
     _emailController = TextEditingController(text: widget.user['email']);
     _cpfController = TextEditingController(text: widget.user['cpf']);
-    _passwordController = TextEditingController(
-        text: widget.user['password'] ??
-            ''); // Use empty string if password is null
-    _contractType = widget.user['contractType'] ??
-        'CLT'; // Default to 'CLT' if contractType is null
+    _passwordController =
+        TextEditingController(text: widget.user['password'] ?? '');
+    _contractType = widget.user['contractType'] ?? 'CLT';
   }
 
   @override
@@ -45,9 +42,7 @@ class _FuncionarioEditingPageState extends State<FuncionarioEditingPage> {
     super.dispose();
   }
 
-  // Function to delete the employee
   Future<void> _deleteFuncionario() async {
-    // Show confirmation dialog
     bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -58,13 +53,13 @@ class _FuncionarioEditingPageState extends State<FuncionarioEditingPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // No, do not delete
+                Navigator.of(context).pop(false);
               },
               child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // Yes, delete
+                Navigator.of(context).pop(true);
               },
               child: const Text('Excluir'),
             ),
@@ -73,17 +68,15 @@ class _FuncionarioEditingPageState extends State<FuncionarioEditingPage> {
       },
     );
 
-    // If confirmed, proceed with deletion
     if (confirmed == true) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Excluindo funcionário...')),
       );
 
-      final response = await deleteUser(widget.user[
-          'cpf']); // Assuming deleteUser is defined in your user_queries.dart file
+      final response = await deleteUser(widget.user['cpf']);
 
       if (response.statusCode == 200) {
-        Navigator.of(context).pop(); // Close the editing page
+        Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -97,129 +90,143 @@ class _FuncionarioEditingPageState extends State<FuncionarioEditingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Editar Funcionário'),
+        title: const Text('Editar Funcionário',
+            style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF832f30),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: <Widget>[
-              // Name input
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Nome'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o nome';
-                  }
-                  return null;
-                },
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(labelText: 'Nome'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira o nome';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(labelText: 'Email'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira o email';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _cpfController,
+                      decoration: const InputDecoration(labelText: 'CPF'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira o CPF';
+                        }
+                        return null;
+                      },
+                    ),
+                    DropdownButtonFormField<String>(
+                      value: _contractType,
+                      decoration:
+                          const InputDecoration(labelText: 'Tipo de Contrato'),
+                      items: _contractTypes.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          _contractType = newValue!;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || !_contractTypes.contains(value)) {
+                          return 'Por favor, selecione um tipo de contrato';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
               ),
-              // Email input
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o email';
-                  }
-                  return null;
-                },
-              ),
-              // CPF input
-              TextFormField(
-                controller: _cpfController,
-                decoration: const InputDecoration(labelText: 'CPF'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o CPF';
-                  }
-                  return null;
-                },
-              ),
-              // Contract Type Dropdown
-              DropdownButtonFormField<String>(
-                value: _contractType, // Bind to the selected contract type
-                decoration:
-                    const InputDecoration(labelText: 'Tipo de Contrato'),
-                items: _contractTypes.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    _contractType = newValue!;
-                  });
-                },
-                validator: (value) {
-                  // Ensure the selected value is valid
-                  if (value == null || !_contractTypes.contains(value)) {
-                    return 'Por favor, selecione um tipo de contrato';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              // Submit Button (Save)
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Atualizando funcionário...')),
-                    );
-                    final response = await updateUserAdmin(
-                        _cpfController.text,
-                        _emailController.text,
-                        _contractType,
-                        _nameController.text);
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Atualizando funcionário...')),
+                          );
+                          final response = await updateUserAdmin(
+                              _cpfController.text,
+                              _emailController.text,
+                              _contractType,
+                              _nameController.text);
 
-                    if (response.statusCode == 200) {
-                      Navigator.of(context).pop();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Houve um erro na atualização')),
-                      );
-                    }
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF832f30),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                          if (response.statusCode == 200) {
+                            Navigator.of(context).pop();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Houve um erro na atualização')),
+                            );
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF832f30),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text(
+                        'Salvar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Salvar',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Delete Button
-              ElevatedButton(
-                onPressed: _deleteFuncionario, // Trigger the delete function
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _deleteFuncionario,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text(
+                        'Excluir Funcionário',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Excluir Funcionário',
-                  style: TextStyle(color: Colors.white),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
