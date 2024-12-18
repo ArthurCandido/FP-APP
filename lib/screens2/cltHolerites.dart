@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fp_app/atualizar.dart';
 import 'package:fp_app/components/HoleriteAdminItem.dart';
 import 'package:fp_app/components/HoleriteCltItem.dart';
 import 'package:fp_app/querys/listarHoleriteClt.dart';
@@ -25,6 +26,10 @@ class _CltHoleritesState extends State<CltHolerites>{
     }else{
       return [];
     }
+  }
+
+  _CltHoleritesState(){
+    atualizarCltHolrites = (){setState(() {});};
   }
 
   @override

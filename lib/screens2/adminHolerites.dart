@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fp_app/atualizar.dart';
 import 'package:fp_app/components/HoleriteAdminItem.dart';
 import 'package:fp_app/querys/listarHoleriteAdmin.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
@@ -15,6 +16,10 @@ class AdminHolerites extends StatefulWidget{
 }
 
 class _AdminHoleritesState extends State<AdminHolerites>{
+
+  _AdminHoleritesState(){
+    atualizarAdminHolerites = (){setState(() {});};
+  }
 
   Future<List<Map<String, dynamic>>> listar() async{
     Response resposta = await listarHoleritesAdmin();

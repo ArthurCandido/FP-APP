@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fp_app/atualizar.dart';
 import 'package:fp_app/screens/funcionario_page/funcionario_page.dart';
 import 'package:fp_app/screens/funcionario_page/funcionario_editing_page.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
@@ -18,10 +19,15 @@ class _HomePageAdminState extends State<HomePageAdmin> {
   List<dynamic> users = [];
   bool isLoading = true;
 
+  _HomePageAdminState(){
+    atualizarAdminUser = (){setState(() {});};
+  }
+
   @override
   void initState() {
     super.initState();
     fetchUsers();
+    
   }
 
   Future<void> fetchUsers() async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fp_app/atualizar.dart';
 import 'package:fp_app/screens/crud_funcionario/user_queries.dart';
 
 class FuncionarioPage extends StatefulWidget {
@@ -126,6 +127,7 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                         );
 
                         if (response.statusCode == 200) {
+                          atualizarAdminUser();
                           Navigator.of(context).pop();
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

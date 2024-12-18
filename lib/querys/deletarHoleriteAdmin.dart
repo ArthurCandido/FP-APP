@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fp_app/atualizar.dart';
 import 'package:http/http.dart' as http;
 import '../screens/jwt_token.dart';
 
@@ -11,5 +12,8 @@ Future<http.Response> deletarHoleritesAdmin(int mes, int ano, String cpf_usuario
       'authorization': token
     },
   );
+  if(response.statusCode == 200){
+    atualizarAdminHolerites();
+  }
   return response;
 }

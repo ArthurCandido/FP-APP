@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:fp_app/atualizar.dart';
 import 'package:fp_app/screens/crud_funcionario/user_queries.dart';
 
 class FuncionarioEditingPage extends StatefulWidget {
@@ -76,6 +77,7 @@ class _FuncionarioEditingPageState extends State<FuncionarioEditingPage> {
       final response = await deleteUser(widget.user['cpf']);
 
       if (response.statusCode == 200) {
+        atualizarAdminUser();
         Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -180,6 +182,7 @@ class _FuncionarioEditingPageState extends State<FuncionarioEditingPage> {
                               _nameController.text);
 
                           if (response.statusCode == 200) {
+                            atualizarAdminUser();
                             Navigator.of(context).pop();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
