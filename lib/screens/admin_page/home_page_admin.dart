@@ -3,6 +3,7 @@ import 'package:fp_app/screens/funcionario_page/funcionario_page.dart';
 import 'package:fp_app/screens/funcionario_page/funcionario_editing_page.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
 import 'package:fp_app/screens/holerite_page/add_holerite_page.dart';
+import 'package:fp_app/screens2/adminHolerites.dart';
 import 'dart:convert';
 import '../crud_funcionario/user_queries.dart';
 
@@ -130,6 +131,7 @@ class _HomePageAdminState extends State<HomePageAdmin> {
           Align(
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
+              heroTag: "FAB FuncionarioPage",
               onPressed: () {
                 Navigator.push(
                   context,
@@ -147,11 +149,12 @@ class _HomePageAdminState extends State<HomePageAdmin> {
             child: Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
+                heroTag: "FAB AdminHolerites",
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AddHoleritePage(),
+                      builder: (context) => AdminHolerites(),
                     ),
                   );
                 },
