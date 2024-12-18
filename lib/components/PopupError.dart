@@ -10,7 +10,7 @@ class PopupError extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(16),
         width: 200,
         height: 100,
         decoration: BoxDecoration(

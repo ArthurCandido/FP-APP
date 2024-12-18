@@ -4,21 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fp_app/components/PopupConfirmacao.dart';
 import 'package:fp_app/components/PopupError.dart';
-import 'package:fp_app/querys/adicionarHoleriteAdmin.dart';
+import 'package:fp_app/querys/alterarHoleriteAdmin.dart';
 import 'package:fp_app/querys/deletarHoleriteAdmin.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
 import 'package:http/http.dart';
 
-class AdminHoleriteNovo extends StatelessWidget{
+class CltHoleriteVelho extends StatelessWidget{
   final GlobalKey<FormState> chave = GlobalKey();
-  int ano = 0;
-  int mes = 0;
-  String cpf_usuario = "";
+  late int ano;
+  late int mes;
+  // ignore: non_constant_identifier_names
+  late String cpf_usuario;
 
-  salvar(context) async {
+  // ignore: non_constant_identifier_names
+  CltHoleriteVelho({required this.ano, required this.mes, required this.cpf_usuario, super.key});
+
+  alterar(context) async {
     if(chave.currentState!.validate()){
       chave.currentState!.save();
-      Response resposta = await adicionarHoleritesAdmin(mes, ano, cpf_usuario, 1);
+      Response resposta = await alterarHoleritesAdmin(mes, ano, cpf_usuario, 1);
       if(resposta.statusCode == 200){
         Navigator.pop(context);
       }else{
@@ -37,12 +41,10 @@ class AdminHoleriteNovo extends StatelessWidget{
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return PopupConfirmacao(
-          mensagem: "Deletar instância?",
-          executar: (){
-            deletarHoleritesAdmin(mes, ano, cpf_usuario);
-          }
-        );
+        return PopupConfirmacao(mensagem: "Deletar este holerite?", executar: (){
+          deletarHoleritesAdmin(mes, ano, cpf_usuario);
+          Navigator.pop(context);
+        },);
       },
     );
   }
@@ -51,7 +53,7 @@ class AdminHoleriteNovo extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Adicionar holerite', style: TextStyle(color: Colors.white)),
+        title: const Text('Holerite', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF832f30),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: <Widget>[
@@ -77,6 +79,8 @@ class AdminHoleriteNovo extends StatelessWidget{
               child: Column(
                 children: [
                   TextFormField(
+                    enabled: false,
+                    initialValue: mes.toString(),
                     decoration: const InputDecoration(labelText: 'Mês'),
                     keyboardType: TextInputType.number,
                     inputFormatters: [
@@ -98,6 +102,8 @@ class AdminHoleriteNovo extends StatelessWidget{
                     },
                   ),
                   TextFormField(
+                    enabled: false,
+                    initialValue: ano.toString(),
                     decoration: const InputDecoration(labelText: 'Ano'),
                     keyboardType: TextInputType.number,
                     inputFormatters: [
@@ -119,6 +125,8 @@ class AdminHoleriteNovo extends StatelessWidget{
                     },
                   ),
                   TextFormField(
+                    enabled: false,
+                    initialValue: cpf_usuario.toString(),
                     decoration: const InputDecoration(labelText: 'CPF'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -131,33 +139,6 @@ class AdminHoleriteNovo extends StatelessWidget{
                     },
                   ),
                 ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF832f30),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 20
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    onPressed: () {
-                      salvar(context);
-                    },
-                    child: const Text(
-                      'Adicionar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
               ),
             ),
           ]

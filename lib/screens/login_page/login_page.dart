@@ -5,6 +5,7 @@ import 'package:fp_app/components/PopupProgress.dart';
 import 'package:fp_app/querys/login_query.dart';
 import 'package:fp_app/screens/admin_page/home_page_admin.dart';
 import 'package:fp_app/screens/home_page_clt/home_page_clt.dart';
+import 'package:fp_app/screens2/cltHolerites.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -108,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        HomePageCLT(user: user)),
+                                        CltHolerites()),
                               );
                               break;
                             case 'PJ':
