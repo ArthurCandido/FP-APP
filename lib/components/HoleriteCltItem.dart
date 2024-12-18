@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fp_app/screens2/AdminHoleriteVelho.dart';
 import 'package:fp_app/screens2/adminHoleriteNovo.dart';
+import 'package:fp_app/screens2/cltHoleriteVelho.dart';
 
-class HoleriteAdminItem extends StatelessWidget{
+class HoleriteCltItem extends StatelessWidget{
   int mes = 1;
   int ano = 1;
   String cpf_usuario = "";
 
-  HoleriteAdminItem(Map<String,dynamic> holerite, {super.key}){
+  HoleriteCltItem(Map<String,dynamic> holerite, {super.key}){
     mes = holerite["mes"];
     ano = holerite["ano"];
     cpf_usuario = holerite["cpf_usuario"];
@@ -21,7 +22,7 @@ class HoleriteAdminItem extends StatelessWidget{
           context,
           MaterialPageRoute(
             builder: (context) =>
-              AdminHoleriteVelho(ano: ano, mes: mes, cpf_usuario:cpf_usuario),
+              CltHoleriteVelho(ano: ano, mes: mes, cpf_usuario:cpf_usuario),
           ),
         );
         
