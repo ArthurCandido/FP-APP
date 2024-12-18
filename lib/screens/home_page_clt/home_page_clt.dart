@@ -109,7 +109,7 @@ class HomePageCLT extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HoleriteListPage(),
+                        builder: (context) => HoleriteListPage(),
                       ),
                     );
                   },
