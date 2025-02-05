@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fp_app/screens/funcionario_page/funcionario_page.dart';
 import 'package:fp_app/screens/funcionario_page/funcionario_editing_page.dart';
+import 'package:fp_app/screens/nfe_list_adm_page/nfe_list_adm_page.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
 import 'package:fp_app/screens/holerite_page/add_holerite_page.dart';
 import 'package:fp_app/screens2/adminHolerites.dart';
@@ -160,6 +161,25 @@ class _HomePageAdminState extends State<HomePageAdmin> {
                 },
                 backgroundColor: const Color(0xFF832f30),
                 child: const Icon(Icons.receipt, color: Colors.white),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton(
+                heroTag: "FAB NfeListAdmPage",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NfeListAdmPage(),
+                    ),
+                  );
+                },
+                backgroundColor: const Color(0xFF832f30),
+                child: const Icon(Icons.list, color: Colors.white),
               ),
             ),
           ),

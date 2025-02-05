@@ -5,6 +5,7 @@ import 'package:fp_app/components/PopupProgress.dart';
 import 'package:fp_app/querys/login_query.dart';
 import 'package:fp_app/screens/admin_page/home_page_admin.dart';
 import 'package:fp_app/screens/home_page_clt/home_page_clt.dart';
+import 'package:fp_app/screens/nfe_page/nfe_page.dart';
 import 'package:fp_app/screens2/cltHolerites.dart';
 
 class LoginPage extends StatefulWidget {
@@ -108,12 +109,15 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        CltHolerites()),
+                                    builder: (context) => CltHolerites()),
                               );
                               break;
                             case 'PJ':
-                              Navigator.of(context).pop();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NfePage()),
+                              );
                               break;
                           }
                         } else {
