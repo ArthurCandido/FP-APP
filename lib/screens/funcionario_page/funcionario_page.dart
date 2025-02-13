@@ -20,6 +20,60 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
   final List<String> _contractTypes = ['CLT', 'PJ'];
   String _contractType = 'CLT';
 
+  // Função para validar o nome
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira o nome';
+    }
+    // Regex para validar o nome (apenas letras)
+    String pattern = r'^[a-zA-Z\s]+$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Por favor, insira um nome válido (apenas letras)';
+    }
+    return null;
+  }
+
+  // Função para validar o email
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira o email';
+    }
+    // Regex para validar o email
+    String pattern =
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Por favor, insira um email válido';
+    }
+    return null;
+  }
+
+  // Função para validar o CPF
+  String? validateCPF(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira o CPF';
+    }
+    // Regex para validar o CPF (formato básico)
+    String pattern = r'^\d{3}\.\d{3}\.\d{3}-\d{2}$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Por favor, insira um CPF válido (formato: xxx.xxx.xxx-xx)';
+    }
+    return null;
+  }
+
+  // Função para validar a senha
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira a senha';
+    }
+    if (value.length < 8) {
+      return 'A senha deve ter no mínimo 8 caracteres';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,42 +95,23 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(labelText: 'Nome'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira o nome';
-                      }
-                      return null;
-                    },
+                    validator: validateName,
                   ),
                   TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(labelText: 'Email'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira o email';
-                      }
-                      return null;
-                    },
+                    validator: validateEmail,
                   ),
                   TextFormField(
                     controller: _cpfController,
                     decoration: const InputDecoration(labelText: 'CPF'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira o CPF';
-                      }
-                      return null;
-                    },
+                    validator: validateCPF,
                   ),
                   TextFormField(
                     controller: _passwordController,
                     decoration: const InputDecoration(labelText: 'Senha'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira a senha';
-                      }
-                      return null;
-                    },
+                    obscureText: true,
+                    validator: validatePassword,
                   ),
                   DropdownButtonFormField<String>(
                     value: _contractType,

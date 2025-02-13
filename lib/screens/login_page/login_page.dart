@@ -19,6 +19,22 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String email = "";
   String senha = "";
+  bool _obscureText = true;
+
+  // Função para validar o email
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira um email';
+    }
+    // Regex para validar o email
+    String pattern =
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Por favor, insira um email válido';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +60,26 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Email'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Insira seu email';
-                      }
-                      return null;
-                    },
+                    validator: validateEmail,
                     onSaved: (texto) {
                       email = texto!;
                     },
                   ),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Senha'),
-                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Senha',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                      ),
+                    ),
+                    obscureText: _obscureText,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Insira sua senha';
