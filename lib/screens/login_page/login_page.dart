@@ -31,7 +31,8 @@ class _LoginPageState extends State<LoginPage> {
         r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value)) {
-      return 'Por favor, insira um email válido';
+      //return 'Por favor, insira um email válido';
+      return null;
     }
     return null;
   }
