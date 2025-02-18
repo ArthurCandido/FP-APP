@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fp_app/components/FileFormField.dart';
 import 'package:fp_app/components/PopupConfirmacao.dart';
 import 'package:fp_app/components/PopupError.dart';
 import 'package:fp_app/querys/adicionarHoleriteAdmin.dart';
@@ -14,11 +16,12 @@ class AdminHoleriteNovo extends StatelessWidget{
   int ano = 0;
   int mes = 0;
   String cpf_usuario = "";
+  File? _selectedFile;
 
   salvar(context) async {
     if(chave.currentState!.validate()){
       chave.currentState!.save();
-      Response resposta = await adicionarHoleritesAdmin(mes, ano, cpf_usuario, 1);
+      Response resposta = await adicionarHoleritesAdmin(mes, ano, cpf_usuario, _selectedFile!.path);
       if(resposta.statusCode == 200){
         Navigator.pop(context);
       }else{
@@ -129,6 +132,10 @@ class AdminHoleriteNovo extends StatelessWidget{
                     onSaved: (valor){
                       cpf_usuario = valor!;
                     },
+                  ),
+                  FileFormField(
+                    onSaved: (file) => _selectedFile = file,
+                    validator: (file) => file == null ? 'Selecione um arquivo' : null,
                   ),
                 ],
               ),
