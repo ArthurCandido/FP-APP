@@ -14,7 +14,7 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _cpfController = TextEditingController();
+  final MaskedTextController _cpfController = MaskedTextController(mask: '000.000.000-00');
   final TextEditingController _passwordController = TextEditingController();
 
   final List<String> _contractTypes = ['CLT', 'PJ'];
