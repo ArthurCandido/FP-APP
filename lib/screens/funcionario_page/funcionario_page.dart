@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fp_app/screens/crud_funcionario/user_queries.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 class FuncionarioPage extends StatefulWidget {
   final Map<String, dynamic>? user;
