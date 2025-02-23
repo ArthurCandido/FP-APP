@@ -7,19 +7,29 @@ import 'package:fp_app/components/PopupProgress.dart';
 import 'package:fp_app/global.dart';
 import 'package:http/http.dart';
 
-class Adminnovousuario extends StatefulWidget{
+class Adminvelhousuario extends StatefulWidget{
+
+  final String? nome;
+  final String? email;
+  final String? cpf;
+  final String? senha;
+  final String? tipo;
+
+  const Adminvelhousuario({super.key, this.nome, this.email, this.cpf, this.senha, this.tipo});
+
   @override
-  State<StatefulWidget> createState() => _AdminnovousuarioState();
+  State<StatefulWidget> createState() => _AdminvelhousuarioState(cpf,email,nome,senha,tipo);
 }
 
-class _AdminnovousuarioState extends State<Adminnovousuario>{
+class _AdminvelhousuarioState extends State<Adminvelhousuario>{
   final chave = GlobalKey<FormState>();
   String? nome;
   String? email;
   String? cpf;
   String? senha;
-  String? tipo = 'admin';
-  final MaskedTextController _cpfController = MaskedTextController(mask: '000.000.000-00');
+  String? tipo;
+
+  _AdminvelhousuarioState(this.cpf,this.email,this.nome,this.senha, this.tipo);
 
   final List<(String, String)> tipos = [('Admin','admin'), ('CLT','CLT'), ('PJ','PJ')];
 
@@ -50,22 +60,9 @@ class _AdminnovousuarioState extends State<Adminnovousuario>{
     return null;
   }
 
-  String? validarCPF(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor, insira o CPF';
-    }
-    // Regex para validar o CPF (formato básico)
-    String pattern = r'^\d{3}\.\d{3}\.\d{3}-\d{2}$';
-    RegExp regex = RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Por favor, insira um CPF válido (formato: xxx.xxx.xxx-xx)';
-    }
-    return null;
-  }
-
   String? validarSenha(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Por favor, insira a senha';
+      return null;
     }
     if (value.length < 8) {
       return 'A senha deve ter no mínimo 8 caracteres';
@@ -73,7 +70,11 @@ class _AdminnovousuarioState extends State<Adminnovousuario>{
     return null;
   }
 
-  criar() async{
+  deletar(){
+
+  }
+
+  salvar() async{
     if (chave.currentState!.validate()) {
 
       showDialog(
@@ -86,7 +87,7 @@ class _AdminnovousuarioState extends State<Adminnovousuario>{
 
       chave.currentState?.save();
       final response = await post(
-        Uri.parse("$Gdominio/admin/user"),
+        Uri.parse("$Gdominio/admin/user/set"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'authorization': Gtoken
@@ -112,8 +113,8 @@ class _AdminnovousuarioState extends State<Adminnovousuario>{
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return const PopupError(
-                error: "Esse CPF já foi cadastrado!");
+            return PopupError(
+                error: response.body);
           },
         );
 
@@ -141,6 +142,7 @@ class _AdminnovousuarioState extends State<Adminnovousuario>{
                 children: <Widget>[
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Nome'),
+                    initialValue: nome,
                     validator: validarNome,
                     onSaved: (String? texto){
                       nome = texto;
@@ -148,21 +150,25 @@ class _AdminnovousuarioState extends State<Adminnovousuario>{
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Email'),
+                    initialValue: email,
                     validator: validarEmail,
                     onSaved: (String? texto){
                       email = texto;
                     },
                   ),
-                  TextFormField(
-                    controller: _cpfController,
-                    decoration: const InputDecoration(labelText: 'CPF'),
-                    validator: validarCPF,
-                    onSaved: (String? texto){
-                      cpf = texto;
-                    },
+                  SizedBox( height: 16,),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                     child: Text(
+                      "CPF: $cpf",
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Senha'),
+                    initialValue: senha,
                     obscureText: true,
                     validator: validarSenha,
                     onSaved: (String? texto){
@@ -196,7 +202,7 @@ class _AdminnovousuarioState extends State<Adminnovousuario>{
                 child: Container(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: criar,
+                    onPressed: salvar,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF832f30),
                       padding: const EdgeInsets.symmetric(
@@ -206,7 +212,7 @@ class _AdminnovousuarioState extends State<Adminnovousuario>{
                       ),
                     ),
                     child: const Text(
-                      'Cadastrar',
+                      'Salvar',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
