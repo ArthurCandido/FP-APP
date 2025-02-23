@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fp_app/global.dart';
 import 'package:http/http.dart' as http;
 import '../screens/jwt_token.dart';
 
@@ -16,6 +17,7 @@ Future<http.Response> loginUserEmail(String email, String senha) async {
   if (response.statusCode == 200) {
     final json = jsonDecode(response.body);
     token = json['token'];
+    Gtoken = token;
   }
   return response;
 }

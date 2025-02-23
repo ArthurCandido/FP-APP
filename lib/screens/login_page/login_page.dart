@@ -6,6 +6,7 @@ import 'package:fp_app/querys/login_query.dart';
 import 'package:fp_app/screens/admin_page/home_page_admin.dart';
 import 'package:fp_app/screens/home_page_clt/home_page_clt.dart';
 import 'package:fp_app/screens/nfe_page/nfe_page.dart';
+import 'package:fp_app/screens2/AdminListaUsuarios.dart';
 import 'package:fp_app/screens2/cltHolerites.dart';
 
 class LoginPage extends StatefulWidget {
@@ -31,8 +32,7 @@ class _LoginPageState extends State<LoginPage> {
         r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value)) {
-      //return 'Por favor, insira um email válido';
-      return null;
+      return 'Por favor, insira um email válido';
     }
     return null;
   }
@@ -126,7 +126,8 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomePageAdmin()),
+                                    //builder: (context) => HomePageAdmin()),
+                                    builder: (context) => Adminlistausuarios()),
                               );
                               break;
                             case 'CLT':
