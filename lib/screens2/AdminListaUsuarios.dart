@@ -8,6 +8,7 @@ import 'package:fp_app/screens/funcionario_page/funcionario_editing_page.dart';
 import 'package:fp_app/screens/funcionario_page/funcionario_page.dart';
 import 'package:fp_app/screens/nfe_list_adm_page/nfe_list_adm_page.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
+import 'package:fp_app/screens2/AdminNovoUsuario.dart';
 import 'package:fp_app/screens2/adminHolerites.dart';
 import 'package:http/http.dart';
 
@@ -32,6 +33,7 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
   @override
   void initState() {
     super.initState();
+    GatualizarUsuarios = atualizar;
     controelLista.addListener(verificarFimLista);
     listar();
   }
@@ -209,7 +211,9 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                   Container(
                     height: 300,
                     alignment: Alignment.center,
-                    child: const CircularProgressIndicator(),
+                    child: const CircularProgressIndicator(
+                      color: Color(0xFF832f30),
+                    ),
                   )
                 ]
               )
@@ -335,7 +339,7 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const FuncionarioPage(),
+                    builder: (context) => Adminnovousuario(),
                   ),
                 );
               },
