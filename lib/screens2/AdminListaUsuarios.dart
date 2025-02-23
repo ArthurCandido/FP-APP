@@ -9,6 +9,7 @@ import 'package:fp_app/screens/funcionario_page/funcionario_page.dart';
 import 'package:fp_app/screens/nfe_list_adm_page/nfe_list_adm_page.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
 import 'package:fp_app/screens2/AdminNovoUsuario.dart';
+import 'package:fp_app/screens2/AdminVelhoUsuario.dart';
 import 'package:fp_app/screens2/adminHolerites.dart';
 import 'package:http/http.dart';
 
@@ -150,6 +151,7 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                           children: [
                             Expanded(
                               child: TextFormField(
+                                decoration: const InputDecoration(labelText: 'CPF/Nome'),
                                 initialValue: cpf_nome,
                                 onSaved: (String? texto){
                                   cpf_nome = texto;
@@ -172,7 +174,7 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                FuncionarioEditingPage(user: e),
+                                Adminvelhousuario(cpf: e["cpf"],tipo: e["tipo"],nome: e["nome"],email: e["email"],senha: e["senha"],),
                           ),
                         );
                       },
@@ -239,6 +241,7 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                           children: [
                             Expanded(
                               child: TextFormField(
+                                decoration: const InputDecoration(labelText: 'CPF/Nome'),
                                 initialValue: cpf_nome,
                                 onSaved: (String? texto){
                                   cpf_nome = texto;
@@ -261,7 +264,7 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                FuncionarioEditingPage(user: e),
+                                Adminvelhousuario(cpf: e["cpf"],tipo: e["tipo"],nome: e["nome"],email: e["email"],senha: e["senha"],),
                           ),
                         );
                       },
