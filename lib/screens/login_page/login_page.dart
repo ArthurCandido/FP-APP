@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:fp_app/components/PopupError.dart';
 import 'package:fp_app/components/PopupProgress.dart';
+import 'package:fp_app/global.dart';
 import 'package:fp_app/querys/login_query.dart';
 import 'package:fp_app/screens/admin_page/home_page_admin.dart';
 import 'package:fp_app/screens/home_page_clt/home_page_clt.dart';
 import 'package:fp_app/screens/nfe_page/nfe_page.dart';
 import 'package:fp_app/screens2/AdminListaUsuarios.dart';
 import 'package:fp_app/screens2/cltHolerites.dart';
+import 'package:http/http.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,21 +21,20 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  String email = "";
+  String cpf = "";
   String senha = "";
   bool _obscureText = true;
+  final MaskedTextController _cpfController = MaskedTextController(mask: '000.000.000-00');
 
-  // Função para validar o email
-  String? validateEmail(String? value) {
+    String? validarCPF(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Por favor, insira um email';
+      return 'Por favor, insira o CPF';
     }
-    // Regex para validar o email
-    String pattern =
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    // Regex para validar o CPF (formato básico)
+    String pattern = r'^\d{3}\.\d{3}\.\d{3}-\d{2}$';
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value)) {
-      return 'Por favor, insira um email válido';
+      return 'Por favor, insira um CPF válido (formato: xxx.xxx.xxx-xx)';
     }
     return null;
   }
@@ -60,10 +62,11 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    validator: validateEmail,
-                    onSaved: (texto) {
-                      email = texto!;
+                    controller: _cpfController,
+                    decoration: const InputDecoration(labelText: 'CPF'),
+                    validator: validarCPF,
+                    onSaved: (String? texto){
+                      cpf = texto!;
                     },
                   ),
                   TextFormField(
@@ -114,7 +117,18 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         );
 
-                        var response = await loginUserEmail(email, senha);
+                        final response = await post(
+                          Uri.parse("$Gdominio/user/autenticar"),
+                          headers: <String, String>{
+                            'Content-Type': 'application/json; charset=UTF-8',
+                          },
+                          body: jsonEncode({
+                            "cpf": cpf,
+                            "senha": senha,
+                          }),
+                        );
+
+                        Gtoken = jsonDecode(response.body)["token"];
 
                         Navigator.of(context).pop();
 

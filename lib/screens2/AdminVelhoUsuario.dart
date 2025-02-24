@@ -5,6 +5,7 @@ import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:fp_app/components/PopupError.dart';
 import 'package:fp_app/components/PopupProgress.dart';
 import 'package:fp_app/global.dart';
+import 'package:fp_app/screens2/AdminNovoHolerite.dart';
 import 'package:http/http.dart';
 
 class Adminvelhousuario extends StatefulWidget{
@@ -194,29 +195,54 @@ class _AdminvelhousuarioState extends State<Adminvelhousuario>{
                 ],
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: salvar,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF832f30),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 20),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: salvar,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF832f30),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text(
+                        'Salvar',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    child: const Text(
-                      'Salvar',
-                      style: TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Adminnovoholerite(cpf: cpf,)),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:const Color(0xFF832f30),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text(
+                        'Adicionar Holerite',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ],
