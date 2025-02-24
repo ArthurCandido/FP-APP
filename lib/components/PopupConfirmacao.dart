@@ -22,7 +22,12 @@ class PopupConfirmacao extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(mensagem),
+              Text(
+                mensagem,
+                style: const TextStyle(
+                  fontSize: 20,
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
