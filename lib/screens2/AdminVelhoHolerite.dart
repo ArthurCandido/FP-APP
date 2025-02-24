@@ -49,41 +49,45 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
   }
 
   baixar() async {
-    try {
-      Dio dio = Dio();
-      String url = "$Gdominio/admin/holerite/dow"; // Ajuste a URL conforme necessário
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const PopupProgress();
+      },
+    );
 
-      // Obter diretório de Downloads no Windows/Linux/macOS
-      Directory? downloadsDir = await getDownloadsDirectory();
-      if (downloadsDir == null) {
-        print("Erro: Não foi possível encontrar a pasta Downloads.");
-        return;
-      }
+    Dio dio = Dio();
+    String url = "$Gdominio/admin/holerite/dow"; // Ajuste a URL conforme necessário
 
-      // Definir o caminho do arquivo
-      String filePath = "${downloadsDir.path}/holerite $mes-$ano $cpf.pdf";
-
-      // Fazendo o POST com os dados e especificando JSON no header
-      final response = await dio.post(
-        url,
-        data: {"cpf": cpf, "mes": mes, "ano": ano},
-        options: Options(
-          responseType: ResponseType.bytes,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": Gtoken, // Enviando token de autenticação
-          },
-        ),
-      );
-
-      // Criando o arquivo e salvando os bytes
-      File file = File(filePath);
-      await file.writeAsBytes(response.data);
-
-      print("Download concluído: $filePath");
-    } catch (e) {
-      print("Erro ao baixar o holerite: $e");
+    // Obter diretório de Downloads no Windows/Linux/macOS
+    Directory? downloadsDir = await getDownloadsDirectory();
+    if (downloadsDir == null) {
+      print("Erro: Não foi possível encontrar a pasta Downloads.");
+      return;
     }
+
+    // Definir o caminho do arquivo
+    String filePath = "${downloadsDir.path}/holerite $mes-$ano $cpf.pdf";
+
+    // Fazendo o POST com os dados e especificando JSON no header
+    final response = await dio.post(
+      url,
+      data: {"cpf": cpf, "mes": mes, "ano": ano},
+      options: Options(
+        responseType: ResponseType.bytes,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": Gtoken, // Enviando token de autenticação
+        },
+      ),
+    );
+
+    // Criando o arquivo e salvando os bytes
+    File file = File(filePath);
+    await file.writeAsBytes(response.data);
+
+    Navigator.of(context).pop();
   }
 
   deletar(){
