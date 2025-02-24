@@ -7,6 +7,7 @@ import 'package:fp_app/screens/nfe_list_adm_page/nfe_list_adm_page.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
 import 'package:fp_app/screens2/AdminNovoHolerite.dart';
 import 'package:fp_app/screens2/AdminNovoUsuario.dart';
+import 'package:fp_app/screens2/AdminVelhoHolerite.dart';
 import 'package:fp_app/screens2/AdminVelhoUsuario.dart';
 import 'package:fp_app/screens2/adminHolerites.dart';
 import 'package:http/http.dart';
@@ -231,7 +232,7 @@ class _AdminlistaholeriteState extends State<Adminlistaholerite>{
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                Adminvelhousuario(cpf: e["cpf"],tipo: e["tipo"],nome: e["nome"],email: e["email"],senha: e["senha"],),
+                                Adminvelhoholerite(cpf: e["cpf_usuario"],mes: e["mes"],ano: e["ano"],nome: e["nome"],caminho: e["caminho"],),
                           ),
                         );
                       },
@@ -340,7 +341,7 @@ class _AdminlistaholeriteState extends State<Adminlistaholerite>{
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                Adminvelhousuario(cpf: e["cpf"],tipo: e["tipo"],nome: e["nome"],email: e["email"],senha: e["senha"],),
+                                Adminvelhoholerite(cpf: e["cpf_usuario"],mes: e["mes"],ano: e["ano"],nome: e["nome"],caminho: e["caminho"],),
                           ),
                         );
                       },
