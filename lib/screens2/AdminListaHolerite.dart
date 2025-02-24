@@ -191,7 +191,8 @@ class _AdminlistaholeriteState extends State<Adminlistaholerite>{
                         key: chave,
                         child: Row(
                           children: [
-                            Expanded(
+                            Container(
+                              width: 65,
                               child: TextFormField(
                                 controller: _dataController,
                                 decoration: const InputDecoration(labelText: 'Data'),
@@ -294,7 +295,8 @@ class _AdminlistaholeriteState extends State<Adminlistaholerite>{
                         key: chave,
                         child: Row(
                           children: [
-                            Expanded(
+                            Container(
+                              width: 65,
                               child: TextFormField(
                                 controller: _dataController,
                                 decoration: const InputDecoration(labelText: 'Data'),

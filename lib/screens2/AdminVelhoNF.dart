@@ -8,33 +8,35 @@ import 'package:fp_app/components/PopupConfirmacao.dart';
 import 'package:fp_app/components/PopupError.dart';
 import 'package:fp_app/components/PopupProgress.dart';
 import 'package:fp_app/global.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
-class Adminvelhoholerite extends StatefulWidget{
+class Adminvelhonf extends StatefulWidget{
 
   final int? mes;
   final int? ano;
   final String? cpf;
   final String? nome;
-  final String? caminho;
+  final int? caminho;
+  final bool? aprovado;
 
-  const Adminvelhoholerite({super.key, this.mes, this.ano, required this.cpf, required this.nome, required this.caminho});
+  const Adminvelhonf({super.key, this.mes, this.ano, this.cpf, this.nome, this.caminho, this.aprovado});
+
 
   @override
-  State<StatefulWidget> createState() => _AdminvelhoholeriteState(mes, ano, cpf, nome, caminho);
+  State<StatefulWidget> createState() => _AdminvelhonfState(mes, ano, cpf, aprovado, caminho, nome);
 }
 
-class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
-
+class _AdminvelhonfState extends State<Adminvelhonf>{
   int? mes;
   int? ano;
   String? cpf;
-  String? nome;
-  String? caminho;
+  final String? nome;
+  bool? aprovado;
+  int? caminho;
   String? arquivo;
 
-  _AdminvelhoholeriteState(this.mes,this.ano,this.cpf,this.nome,this.caminho);
+  _AdminvelhonfState(this.mes,this.ano,this.cpf,this.aprovado,this.caminho, this.nome);
 
   final chave = GlobalKey<FormState>();
 
@@ -58,7 +60,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
     );
 
     Dio dio = Dio();
-    String url = "$Gdominio/admin/holerite/dow"; // Ajuste a URL conforme necessário
+    String url = "$Gdominio/admin/nf/dow"; // Ajuste a URL conforme necessário
 
     // Obter diretório de Downloads no Windows/Linux/macOS
     Directory? downloadsDir = await getDownloadsDirectory();
@@ -68,12 +70,12 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
     }
 
     // Definir o caminho do arquivo
-    String filePath = "${downloadsDir.path}/holerite $mes-$ano $cpf.pdf";
+    String filePath = "${downloadsDir.path}/nota fiscal $mes-$ano $cpf.pdf";
 
     // Fazendo o POST com os dados e especificando JSON no header
     final response = await dio.post(
       url,
-      data: {"cpf": cpf, "mes": mes, "ano": ano},
+      data: { "cpf":cpf, "mes": mes, "ano": ano},
       options: Options(
         responseType: ResponseType.bytes,
         headers: {
@@ -159,10 +161,9 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
 
         chave.currentState?.save();
 
-        var request = http.MultipartRequest('POST', Uri.parse("$Gdominio/admin/holerite/set"));
+        var request = http.MultipartRequest('POST', Uri.parse("$Gdominio/pj/nf/set"));
         request.headers['Authorization'] = Gtoken;
         request.files.add(await http.MultipartFile.fromPath('file', arquivo!));
-        request.fields['cpf'] = cpf!;
         request.fields['mes'] = mes!.toString();
         request.fields['ano'] = ano!.toString();
         var response = await request.send();
@@ -172,7 +173,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
         
         if(response.statusCode == 200){
           
-          GatualizarHolerites();
+          GatualizarNFs();
           Navigator.of(context).pop();
 
         }else{
@@ -202,14 +203,10 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Holerite',
-            style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF832f30),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: Padding(
+    Widget conteudo = Container();
+    if(caminho != null){
+      print("tem caminho");
+      conteudo = Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -248,6 +245,16 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                       ),
                     ),
                   ),
+                  SizedBox( height: 16,),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                     child: Text(
+                      'Estado: ${caminho != null? "ENVIADO" : "REQUISITADO"}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -269,7 +276,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                         ),
                       ),
                       //SizedBox(width: 100,),
-                      ElevatedButton.icon(
+                      /*ElevatedButton.icon(
                         onPressed: _pickFile,
                         icon: const Icon(Icons.attach_file, color: Colors.white),
                         label: Text(
@@ -286,7 +293,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                      ),
+                      ),*/
                       
                     ],
                   ),
@@ -297,6 +304,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
+                  /*
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -316,12 +324,120 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                     ),
                   ),
                   const SizedBox(height: 20),
+                  */
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }else{
+      conteudo = Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Form(
+              key: chave,
+              child: Column(
+                children: <Widget>[
+                  SizedBox( height: 16,),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                     child: Text(
+                      'Data: $ano/$mes',
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  SizedBox( height: 16,),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                     child: Text(
+                      "CPF: $cpf",
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  SizedBox( height: 16,),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                     child: Text(
+                      "Nome: $nome",
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  SizedBox( height: 16,),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                     child: Text(
+                      'Estado: ${caminho != null? "ENVIADO" : "REQUISITADO"}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      /*ElevatedButton.icon(
+                        onPressed: baixar,
+                        icon: const Icon(Icons.attach_file, color: Colors.white),
+                        label:const Text(
+                          'Baixar Arquivo',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 53, 106, 15),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),*/
+                      //SizedBox(width: 100,),
+                      /*
+                      ElevatedButton.icon(
+                        onPressed: _pickFile,
+                        icon: const Icon(Icons.attach_file, color: Colors.white),
+                        label: Text(
+                          arquivo == null
+                              ? 'Escolher Arquivo'
+                              : 'Arquivo: ${arquivo!.split("\\").last}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[700],
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),*/
+                      
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  /*
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: deletar,
+                      onPressed: salvar,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: const Color(0xFF832f30),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 40, vertical: 20),
                         shape: RoundedRectangleBorder(
@@ -329,17 +445,28 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                         ),
                       ),
                       child: const Text(
-                        'Deletar',
+                        'Salvar',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  */
                 ],
               ),
             ),
           ],
         ),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Nota Fiscal',
+            style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF832f30),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
+      body: conteudo
     );
   }
 }

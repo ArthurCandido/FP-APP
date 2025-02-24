@@ -11,7 +11,7 @@ import 'package:fp_app/global.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
-class Adminvelhoholerite extends StatefulWidget{
+class Cltvelhoholerite extends StatefulWidget{
 
   final int? mes;
   final int? ano;
@@ -19,13 +19,13 @@ class Adminvelhoholerite extends StatefulWidget{
   final String? nome;
   final String? caminho;
 
-  const Adminvelhoholerite({super.key, this.mes, this.ano, required this.cpf, required this.nome, required this.caminho});
+  const Cltvelhoholerite({super.key, this.mes, this.ano, required this.cpf, required this.nome, required this.caminho});
 
   @override
-  State<StatefulWidget> createState() => _AdminvelhoholeriteState(mes, ano, cpf, nome, caminho);
+  State<StatefulWidget> createState() => _CltvelhoholeriteState(mes, ano, cpf, nome, caminho);
 }
 
-class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
+class _CltvelhoholeriteState extends State<Cltvelhoholerite>{
 
   int? mes;
   int? ano;
@@ -34,7 +34,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
   String? caminho;
   String? arquivo;
 
-  _AdminvelhoholeriteState(this.mes,this.ano,this.cpf,this.nome,this.caminho);
+  _CltvelhoholeriteState(this.mes,this.ano,this.cpf,this.nome,this.caminho);
 
   final chave = GlobalKey<FormState>();
 
@@ -58,7 +58,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
     );
 
     Dio dio = Dio();
-    String url = "$Gdominio/admin/holerite/dow"; // Ajuste a URL conforme necessário
+    String url = "$Gdominio/clt/holerite/dow"; // Ajuste a URL conforme necessário
 
     // Obter diretório de Downloads no Windows/Linux/macOS
     Directory? downloadsDir = await getDownloadsDirectory();
@@ -73,7 +73,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
     // Fazendo o POST com os dados e especificando JSON no header
     final response = await dio.post(
       url,
-      data: {"cpf": cpf, "mes": mes, "ano": ano},
+      data: { "mes": mes, "ano": ano},
       options: Options(
         responseType: ResponseType.bytes,
         headers: {
@@ -228,26 +228,6 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                       ),
                     ),
                   ),
-                  SizedBox( height: 16,),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                     child: Text(
-                      "CPF: $cpf",
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  SizedBox( height: 16,),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                     child: Text(
-                      "Nome: $nome",
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -268,6 +248,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                           ),
                         ),
                       ),
+                      /*
                       //SizedBox(width: 100,),
                       ElevatedButton.icon(
                         onPressed: _pickFile,
@@ -287,7 +268,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                           ),
                         ),
                       ),
-                      
+                      */
                     ],
                   ),
                 ],
@@ -297,6 +278,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
+                  /*
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -333,7 +315,7 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),

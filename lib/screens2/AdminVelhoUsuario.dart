@@ -6,6 +6,7 @@ import 'package:fp_app/components/PopupError.dart';
 import 'package:fp_app/components/PopupProgress.dart';
 import 'package:fp_app/global.dart';
 import 'package:fp_app/screens2/AdminNovoHolerite.dart';
+import 'package:fp_app/screens2/AdminNovoNF.dart';
 import 'package:http/http.dart';
 
 class Adminvelhousuario extends StatefulWidget{
@@ -218,30 +219,56 @@ class _AdminvelhousuarioState extends State<Adminvelhousuario>{
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Container(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Adminnovoholerite(cpf: cpf,)),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:const Color(0xFF832f30),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                  tipo == "CLT"?
+                    Container(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Adminnovoholerite(cpf: cpf,)),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:const Color(0xFF832f30),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          'Adicionar Holerite',
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      child: const Text(
-                        'Adicionar Holerite',
-                        style: TextStyle(color: Colors.white),
+                    )
+                  :
+                    Container(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Adminnovonf(cpf: cpf,)),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:const Color(0xFF832f30),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          'Requisitar Nota Fiscal',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),

@@ -3,3 +3,4 @@ String Gtoken = "";
 
 Function GatualizarUsuarios = (){};
 Function GatualizarHolerites = (){};
+Function GatualizarNFs = (){};

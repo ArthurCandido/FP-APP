@@ -53,7 +53,7 @@ class WelcomePage extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    'Login com Email',
+                    'Login',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
