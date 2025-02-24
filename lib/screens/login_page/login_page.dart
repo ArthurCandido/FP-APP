@@ -116,7 +116,6 @@ class _LoginPageState extends State<LoginPage> {
                             return const PopupProgress();
                           },
                         );
-
                         final response = await post(
                           Uri.parse("$Gdominio/user/autenticar"),
                           headers: <String, String>{
@@ -128,11 +127,10 @@ class _LoginPageState extends State<LoginPage> {
                           }),
                         );
 
-                        Gtoken = jsonDecode(response.body)["token"];
-
                         Navigator.of(context).pop();
 
                         if (response.statusCode == 200) {
+                          Gtoken = jsonDecode(response.body)["token"];
                           String tipo = jsonDecode(response.body)["tipo"];
                           Map<String, dynamic> user = jsonDecode(response.body);
                           switch (tipo) {
