@@ -264,7 +264,7 @@ class _AdminvelhousuarioState extends State<Adminvelhousuario>{
                           ),
                         ),
                         child: const Text(
-                          'Adicionar Nota Fiscal',
+                          'Requisitar Nota Fiscal',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),

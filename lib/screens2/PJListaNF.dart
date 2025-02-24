@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:fp_app/global.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
-import 'package:fp_app/screens2/AdminNovoNF.dart';
 import 'package:fp_app/screens2/AdminVelhoHolerite.dart';
-import 'package:fp_app/screens2/AdminVelhoNF.dart';
+import 'package:fp_app/screens2/PJVelhoNF.dart';
 import 'package:http/http.dart';
 
-class Adminlistanf extends StatefulWidget{
+class Pjlistanf extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _AdminlistanfState();
+  State<StatefulWidget> createState() => _PjlistanfState();
 }
 
-class _AdminlistanfState extends State<Adminlistanf>{
+class _PjlistanfState extends State<Pjlistanf>{
   String? erro;
   bool carregando = true;
   List<Map<String, dynamic>> lista = [];
@@ -31,7 +30,7 @@ class _AdminlistanfState extends State<Adminlistanf>{
   bool scroll = true;
 
   //final List<(String, String)> tipos = [('TODOS','todos'), ('REQUISITADOS','requisitados'), ('EM ANÁLISE','em analise'), ('APROVADOS','aprovados')];
-  final List<(String, String)> tipos = [('TODOS','todos'), ('REQUISITADOS','requisitados'), ('RECEBIDOS','em analise')];
+  final List<(String, String)> tipos = [('TODOS','todos'), ('REQUISITADOS','requisitados'), ('ENVIADOS','em analise')];
 
   GlobalKey<FormState> chave = GlobalKey();
 
@@ -112,7 +111,7 @@ class _AdminlistanfState extends State<Adminlistanf>{
     setState(() {});
     //
     final response = await post(
-      Uri.parse("$Gdominio/admin/nf/list"),
+      Uri.parse("$Gdominio/pj/nf/list"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'authorization': Gtoken
@@ -121,7 +120,6 @@ class _AdminlistanfState extends State<Adminlistanf>{
         "pagina": pagina,
         "ano": ano,
         "mes": mes,
-        "cpf_nome": cpf_nome,
         "tipo" : tipo,
       }),
     );
@@ -212,17 +210,6 @@ class _AdminlistanfState extends State<Adminlistanf>{
                             ),
                             SizedBox(width: 32,),
                             Expanded(
-                              child: TextFormField(
-                                decoration: const InputDecoration(labelText: 'CPF/Nome'),
-                                initialValue: cpf_nome,
-                                onSaved: (String? texto){
-                                  cpf_nome = texto;
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 32,),
-                            Container(
-                              width: 200,
                               child: DropdownButtonFormField<String>(
                                 value: tipo,
                                 decoration:
@@ -256,7 +243,7 @@ class _AdminlistanfState extends State<Adminlistanf>{
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                Adminvelhonf(cpf: e["cpf_usuario"],mes: e["mes"],ano: e["ano"],nome: e["nome"],caminho: e["caminho_documento"],aprovado: e["aprovado"],),
+                                Pjvelhonf(cpf: e["cpf_usuario"],mes: e["mes"],ano: e["ano"],aprovado: e["aprovado"],caminho: e["caminho_documento"],),
                           ),
                         );
                       },
@@ -274,12 +261,6 @@ class _AdminlistanfState extends State<Adminlistanf>{
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text('Data: ${e['ano']}/${e["mes"]}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('CPF: ${e['cpf_usuario']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('Nome: ${e['nome']}',
                                     style: const TextStyle(fontSize: 18)),
                                 const SizedBox(height: 8),
                                 Text('Estado: ${e['caminho_documento'] != null? "RECEBIDO" : "REQUISITADO"}',
@@ -345,17 +326,6 @@ class _AdminlistanfState extends State<Adminlistanf>{
                             ),
                             SizedBox(width: 32,),
                             Expanded(
-                              child: TextFormField(
-                                decoration: const InputDecoration(labelText: 'CPF/Nome'),
-                                initialValue: cpf_nome,
-                                onSaved: (String? texto){
-                                  cpf_nome = texto;
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 32,),
-                            Container(
-                              width: 200,
                               child: DropdownButtonFormField<String>(
                                 value: tipo,
                                 decoration:
@@ -389,7 +359,7 @@ class _AdminlistanfState extends State<Adminlistanf>{
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                Adminvelhonf(cpf: e["cpf_usuario"],mes: e["mes"],ano: e["ano"],nome: e["nome"],caminho: e["caminho_documento"],aprovado: e["aprovado"],),
+                                Pjvelhonf(cpf: e["cpf_usuario"],mes: e["mes"],ano: e["ano"],aprovado: e["aprovado"],caminho: e["caminho_documento"],),
                           ),
                         );
                       },
@@ -409,13 +379,7 @@ class _AdminlistanfState extends State<Adminlistanf>{
                                 Text('Data: ${e['ano']}/${e["mes"]}',
                                     style: const TextStyle(fontSize: 18)),
                                 const SizedBox(height: 8),
-                                Text('CPF: ${e['cpf_usuario']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('Nome: ${e['nome']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('Estado: ${e['caminho_documento'] != null? "RECEBIDO" : "REQUISITADO"}',
+                                Text('Estado: ${e['caminho_documento'] != null? "ENVIADO" : "REQUISITADO"}',
                                     style: const TextStyle(fontSize: 18)),
                               ],
                             ),
@@ -433,6 +397,7 @@ class _AdminlistanfState extends State<Adminlistanf>{
     }
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Notas Fiscais', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF832f30),
          iconTheme: const IconThemeData(color: Colors.white),
@@ -457,7 +422,7 @@ class _AdminlistanfState extends State<Adminlistanf>{
         ],
       ),
       body: conteudo,
-      floatingActionButton: Stack(
+      /*floatingActionButton: Stack(
         children: [
           Align(
             alignment: Alignment.bottomRight,
@@ -476,7 +441,7 @@ class _AdminlistanfState extends State<Adminlistanf>{
             ),
           ),
         ],
-      ),
+      ),*/
     ); 
   }
 }

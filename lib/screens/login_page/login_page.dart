@@ -9,6 +9,7 @@ import 'package:fp_app/screens/admin_page/home_page_admin.dart';
 import 'package:fp_app/screens/home_page_clt/home_page_clt.dart';
 import 'package:fp_app/screens/nfe_page/nfe_page.dart';
 import 'package:fp_app/screens2/AdminListaUsuarios.dart';
+import 'package:fp_app/screens2/PJListaNF.dart';
 import 'package:fp_app/screens2/cltHolerites.dart';
 import 'package:http/http.dart';
 import '../jwt_token.dart';
@@ -158,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => NfePage()),
+                                    builder: (context) => Pjlistanf()),
                               );
                               break;
                           }
