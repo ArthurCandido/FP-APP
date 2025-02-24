@@ -1,43 +1,77 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:fp_app/global.dart';
-import 'package:fp_app/screens/admin_page/user_class.dart';
-import 'package:fp_app/screens/funcionario_page/funcionario_editing_page.dart';
-import 'package:fp_app/screens/funcionario_page/funcionario_page.dart';
 import 'package:fp_app/screens/nfe_list_adm_page/nfe_list_adm_page.dart';
 import 'package:fp_app/screens/welcome_page/welcome_page.dart';
-import 'package:fp_app/screens2/AdminListaHolerite.dart';
+import 'package:fp_app/screens2/AdminNovoHolerite.dart';
 import 'package:fp_app/screens2/AdminNovoUsuario.dart';
 import 'package:fp_app/screens2/AdminVelhoUsuario.dart';
 import 'package:fp_app/screens2/adminHolerites.dart';
 import 'package:http/http.dart';
 
-class Adminlistausuarios extends StatefulWidget{
+class Adminlistaholerite extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _AdminlistausuariosState();
+  State<StatefulWidget> createState() => _AdminlistaholeriteState();
 }
 
-class _AdminlistausuariosState extends State<Adminlistausuarios>{
+class _AdminlistaholeriteState extends State<Adminlistaholerite>{
   String? erro;
   bool carregando = true;
   List<Map<String, dynamic>> lista = [];
 
   int pagina = 0;
+
   String? cpf_nome;
+  int? ano;
+  int? mes;
+
   ScrollController controelLista = ScrollController();
   double posicaoScroll = 0;
   bool scroll = true;
 
   GlobalKey<FormState> chave = GlobalKey();
 
+  final MaskedTextController _dataController = MaskedTextController(mask: '0000/00');
+
   @override
   void initState() {
     super.initState();
-    GatualizarUsuarios = atualizar;
+    GatualizarHolerites = atualizar;
     controelLista.addListener(verificarFimLista);
     listar();
+  }
+
+  String? validarData(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+    // Regex para validar o CPF (formato básico)
+    String patternano1 = r'^\d{4}$';
+    String patternano2 = r'^\d{4}\/$';
+    String pattermes = r'^\d{4}\/\d{2}$';
+    RegExp regex1 = RegExp(patternano1);
+    RegExp regex2 = RegExp(patternano2);
+    RegExp regex3 = RegExp(pattermes);
+    if (!regex1.hasMatch(value) && !regex2.hasMatch(value) && !regex3.hasMatch(value)) {
+      return 'Por favor, insira uma data válida (formato: 0000/00)';
+    }
+    if(regex3.hasMatch(value)){
+      int ano = int.parse(value.split("/")[0]);
+      int mes = int.parse(value.split("/")[1]);
+      if(ano < 1900 || ano > 2100){
+        return 'Por favor, insira um ano válido';
+      }
+      if(mes < 1 || mes > 12){
+        return 'Por favor, insira um mês válido';
+      }
+    }
+    int ano = int.parse(value.split("/")[0]);
+    if(ano < 1900 || ano > 2100){
+      return 'Por favor, insira um ano válido';
+    }
+    return null;
   }
 
   void verificarFimLista() {
@@ -48,17 +82,21 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
   }
 
   buscar(){
-    chave.currentState?.save();
-    pagina = 0;
-    lista = [];
-    posicaoScroll = 0;
-    scroll = true;
-    listar();
+    if(chave.currentState!.validate()){
+      chave.currentState?.save();
+      pagina = 0;
+      lista = [];
+      posicaoScroll = 0;
+      scroll = true;
+      listar();
+    }
   }
 
   atualizar(){
     pagina = 0;
-    cpf_nome = "";
+    cpf_nome = null;
+    mes = null;
+    ano = null;
     lista = [];
     posicaoScroll = 0;
     scroll = true;
@@ -71,13 +109,15 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
     setState(() {});
     //
     final response = await post(
-      Uri.parse("$Gdominio/admin/user/list"),
+      Uri.parse("$Gdominio/admin/holerite/list"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'authorization': Gtoken
       },
       body: jsonEncode({
         "pagina": pagina,
+        "ano": ano,
+        "mes": mes,
         "cpf_nome": cpf_nome,
       }),
     );
@@ -152,12 +192,28 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                           children: [
                             Expanded(
                               child: TextFormField(
+                                controller: _dataController,
+                                decoration: const InputDecoration(labelText: 'Data'),
+                                validator: validarData,
+                                onSaved: (String? texto){
+                                  if(texto!=null){
+                                    try{
+                                      ano = int.parse(texto.split("/")[0]);
+                                      mes = int.parse(texto.split("/")[1]);
+                                    }catch(e){}    
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 32,),
+                            Expanded(
+                              child: TextFormField(
                                 decoration: const InputDecoration(labelText: 'CPF/Nome'),
                                 initialValue: cpf_nome,
                                 onSaved: (String? texto){
                                   cpf_nome = texto;
                                 },
-                              )
+                              ),
                             ),
                             IconButton(
                               onPressed: buscar, 
@@ -192,16 +248,13 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
+                                Text('Data: ${e['ano']}/${e["mes"]}',
+                                    style: const TextStyle(fontSize: 18)),
+                                const SizedBox(height: 8),
+                                Text('CPF: ${e['cpf_usuario']}',
+                                    style: const TextStyle(fontSize: 18)),
+                                const SizedBox(height: 8),
                                 Text('Nome: ${e['nome']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('Email: ${e['email']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('CPF: ${e['cpf']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('Tipo de Contrato: ${e['tipo']}',
                                     style: const TextStyle(fontSize: 18)),
                               ],
                             ),
@@ -242,12 +295,34 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                           children: [
                             Expanded(
                               child: TextFormField(
+                                controller: _dataController,
+                                decoration: const InputDecoration(labelText: 'Data'),
+                                validator: validarData,
+                                onSaved: (String? texto){
+                                  if(texto!=null){
+                                    try{
+                                      ano = int.parse(texto.split("/")[0]);
+                                    }catch(e){
+                                      ano = null;
+                                    }    
+                                    try{
+                                      mes = int.parse(texto.split("/")[1]);
+                                    }catch(e){
+                                      mes = null;
+                                    }  
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 32,),
+                            Expanded(
+                              child: TextFormField(
                                 decoration: const InputDecoration(labelText: 'CPF/Nome'),
                                 initialValue: cpf_nome,
                                 onSaved: (String? texto){
                                   cpf_nome = texto;
                                 },
-                              )
+                              ),
                             ),
                             IconButton(
                               onPressed: buscar, 
@@ -282,16 +357,13 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
+                                Text('Data: ${e['ano']}/${e["mes"]}',
+                                    style: const TextStyle(fontSize: 18)),
+                                const SizedBox(height: 8),
+                                Text('CPF: ${e['cpf_usuario']}',
+                                    style: const TextStyle(fontSize: 18)),
+                                const SizedBox(height: 8),
                                 Text('Nome: ${e['nome']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('Email: ${e['email']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('CPF: ${e['cpf']}',
-                                    style: const TextStyle(fontSize: 18)),
-                                const SizedBox(height: 8),
-                                Text('Tipo de Contrato: ${e['tipo']}',
                                     style: const TextStyle(fontSize: 18)),
                               ],
                             ),
@@ -309,9 +381,9 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Admin', style: TextStyle(color: Colors.white)),
+        title: const Text('Holerites', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF832f30),
-        automaticallyImplyLeading: false,
+         iconTheme: const IconThemeData(color: Colors.white),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
@@ -343,50 +415,12 @@ class _AdminlistausuariosState extends State<Adminlistausuarios>{
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Adminnovousuario(),
+                    builder: (context) => Adminnovoholerite(),
                   ),
                 );
               },
               backgroundColor: const Color(0xFF832f30),
               child: const Icon(Icons.add, color: Colors.white),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 70),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: FloatingActionButton(
-                heroTag: "FAB AdminHolerites",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Adminlistaholerite(),
-                    ),
-                  );
-                },
-                backgroundColor: const Color(0xFF832f30),
-                child: const Icon(Icons.receipt, color: Colors.white),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: FloatingActionButton(
-                heroTag: "FAB NfeListAdmPage",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NfeListAdmPage(),
-                    ),
-                  );
-                },
-                backgroundColor: const Color(0xFF832f30),
-                child: const Icon(Icons.list, color: Colors.white),
-              ),
             ),
           ),
         ],
