@@ -12,6 +12,7 @@ import 'package:fp_app/screens2/AdminVelhoUsuario.dart';
 import 'package:fp_app/screens2/CLTVelhoHolerite.dart';
 import 'package:fp_app/screens2/adminHolerites.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 class Cltlistaholerite extends StatefulWidget{
   @override
@@ -43,6 +44,101 @@ class _CltlistaholeriteState extends State<Cltlistaholerite>{
     GatualizarHolerites = atualizar;
     controelLista.addListener(verificarFimLista);
     listar();
+  }
+
+  Future<void> registrarPonto(BuildContext context) async {
+    try {
+      final response = await post(
+        Uri.parse('http://localhost:3000/api/clt/ponto'), // Replace with your API URL
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': Gtoken, // Replace with actual token
+        },
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Ponto registrado com sucesso!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro: ${responseData['message']}')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao conectar: $error')),
+      );
+    }
+  }
+
+  String formatarData(String data) {
+    DateTime dateTime = DateTime.parse(data);
+    return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
+  }
+
+  Future<void> listarEntradasSaidas(BuildContext context) async {
+    try {
+      final response = await get(
+        Uri.parse('http://localhost:3000/api/clt/ponto'), // Replace with your API URL
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': Gtoken, // Replace with actual token
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("Histórico de Entradas e Saídas"),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final item = data[index];
+                    return ListTile(
+                      title: Text("Data: ${formatarData(item['horario'])}"),
+                      subtitle: Text(
+                          "Tipo: ${item['entrada_saida'] == true ? 'entrada' : 'saída'}"),
+                      leading: Icon(
+                        item['entrada_saida'] == true
+                            ? Icons.login
+                            : Icons.logout,
+                        color: item['entrada_saida'] == true
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Fechar"),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erro ao buscar histórico de pontos!')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao conectar: $error')),
+      );
+    }
   }
 
   String? validarData(String? value) {
@@ -377,6 +473,31 @@ class _CltlistaholeriteState extends State<Cltlistaholerite>{
       body: conteudo,
       floatingActionButton: Stack(
         children: [
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              heroTag: "",
+              onPressed: () {
+                listarEntradasSaidas(context);
+              },
+              backgroundColor: const Color(0xFF832f30),
+              child: const Icon(Icons.history, color: Colors.white),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 70),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                heroTag: "FAB AdminHolerites",
+                onPressed: () {
+                  registrarPonto(context);
+                },
+                backgroundColor: const Color(0xFF832f30),
+                child: const Icon(Icons.access_time, color: Colors.white),
+              ),
+            ),
+          ),
         ],
       ),
     ); 
