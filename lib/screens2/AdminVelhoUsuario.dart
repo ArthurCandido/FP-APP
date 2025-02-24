@@ -127,7 +127,7 @@ class _AdminvelhousuarioState extends State<Adminvelhousuario>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de Funcionários',
+        title: const Text('Funcionário',
             style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF832f30),
         iconTheme: const IconThemeData(color: Colors.white),

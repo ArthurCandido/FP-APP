@@ -115,6 +115,7 @@ class _AdminnovoholeriteState extends State<Adminnovoholerite>{
         
         if(response.statusCode == 200){
           
+          GatualizarHolerites();
           Navigator.of(context).pop();
 
         }else{
