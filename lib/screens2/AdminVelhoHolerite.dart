@@ -53,23 +53,32 @@ class _AdminvelhoholeriteState extends State<Adminvelhoholerite>{
       Dio dio = Dio();
       String url = "$Gdominio/admin/holerite/dow"; // Ajuste a URL conforme necessário
 
-      // Diretório para salvar o arquivo
-      Directory tempDir = await getApplicationDocumentsDirectory();
-      String filePath = "${tempDir.path}/holerite_$mes-$ano.pdf";
+      // Obter diretório de Downloads no Windows/Linux/macOS
+      Directory? downloadsDir = await getDownloadsDirectory();
+      if (downloadsDir == null) {
+        print("Erro: Não foi possível encontrar a pasta Downloads.");
+        return;
+      }
 
-      // Fazendo o POST com os dados
-      final response = await dio.post<ResponseBody>(
+      // Definir o caminho do arquivo
+      String filePath = "${downloadsDir.path}/holerite $mes-$ano $cpf.pdf";
+
+      // Fazendo o POST com os dados e especificando JSON no header
+      final response = await dio.post(
         url,
         data: {"cpf": cpf, "mes": mes, "ano": ano},
-        options: Options(responseType: ResponseType.bytes, followRedirects: false),
+        options: Options(
+          responseType: ResponseType.bytes,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": Gtoken, // Enviando token de autenticação
+          },
+        ),
       );
 
-      // Salvar o arquivo
+      // Criando o arquivo e salvando os bytes
       File file = File(filePath);
-      List<int> bytes = await response.data!.stream.fold<List<int>>(
-          [], (previous, element) => previous..addAll(element));
-
-      await file.writeAsBytes(bytes);
+      await file.writeAsBytes(response.data);
 
       print("Download concluído: $filePath");
     } catch (e) {
