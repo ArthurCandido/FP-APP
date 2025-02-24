@@ -5,7 +5,7 @@ import '../screens/jwt_token.dart';
 
 Future<http.Response> loginUserEmail(String email, String senha) async {
   final response = await http.post(
-    Uri.parse("http://localhost:3000/api//user/autenticaremail"),
+    Uri.parse("http://localhost:3000/api/user/autenticaremail"),
     headers: {
       "Content-Type": "application/json",
     },
@@ -24,7 +24,7 @@ Future<http.Response> loginUserEmail(String email, String senha) async {
 
 Future<http.Response> loginUserCpf(String cpf, String senha) async {
   final response = await http.post(
-    Uri.parse("http://localhost:3000/api//user/autenticaremail"),
+    Uri.parse("http://localhost:3000/api/user/autenticaremail"),
     headers: {
       "Content-Type": "application/json",
     },

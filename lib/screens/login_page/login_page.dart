@@ -11,6 +11,7 @@ import 'package:fp_app/screens/nfe_page/nfe_page.dart';
 import 'package:fp_app/screens2/AdminListaUsuarios.dart';
 import 'package:fp_app/screens2/cltHolerites.dart';
 import 'package:http/http.dart';
+import '../jwt_token.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,9 +25,10 @@ class _LoginPageState extends State<LoginPage> {
   String cpf = "";
   String senha = "";
   bool _obscureText = true;
-  final MaskedTextController _cpfController = MaskedTextController(mask: '000.000.000-00');
+  final MaskedTextController _cpfController =
+      MaskedTextController(mask: '000.000.000-00');
 
-    String? validarCPF(String? value) {
+  String? validarCPF(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor, insira o CPF';
     }
@@ -65,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _cpfController,
                     decoration: const InputDecoration(labelText: 'CPF'),
                     validator: validarCPF,
-                    onSaved: (String? texto){
+                    onSaved: (String? texto) {
                       cpf = texto!;
                     },
                   ),
@@ -74,7 +76,9 @@ class _LoginPageState extends State<LoginPage> {
                       labelText: 'Senha',
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscureText ? Icons.visibility : Icons.visibility_off,
+                          _obscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                         onPressed: () {
                           setState(() {
@@ -131,6 +135,7 @@ class _LoginPageState extends State<LoginPage> {
 
                         if (response.statusCode == 200) {
                           Gtoken = jsonDecode(response.body)["token"];
+                          token = jsonDecode(response.body)["token"];
                           String tipo = jsonDecode(response.body)["tipo"];
                           Map<String, dynamic> user = jsonDecode(response.body);
                           switch (tipo) {
